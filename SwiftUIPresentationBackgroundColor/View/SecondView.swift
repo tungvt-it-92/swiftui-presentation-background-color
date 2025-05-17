@@ -8,6 +8,7 @@ import SwiftUI
 
 struct SecondView: View {
     @Binding var isPresented: Bool
+    @State var animatingOnAppear: Bool = false
     
     var body: some View {
         Group {
@@ -23,10 +24,15 @@ struct SecondView: View {
             .background(Color.white)
             .cornerRadius(10)
         }
+        .scaleEffect(animatingOnAppear ? 1 : 0.1)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .topTrailing, content: {
             Button {
-                isPresented.toggle()
+                var transaction = Transaction(animation: .none)
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    isPresented.toggle()
+                }
             } label: {
                 Image(systemName: "x.circle.fill")
                     .resizable()
@@ -37,6 +43,10 @@ struct SecondView: View {
         })
         .background(Color.gray.opacity(0.5))
         .foregroundStyle(Color.black)
+        .animation(.spring(duration: 0.25), value: animatingOnAppear)
+        .onAppear {
+            animatingOnAppear = true
+        }
     }
 }
 

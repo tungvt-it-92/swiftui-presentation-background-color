@@ -13,12 +13,16 @@ struct HomeView: View {
             Text("Presentation with transparent background example")
                 .multilineTextAlignment(.center)
                 .font(.headline)
-                .foregroundColor(.secondary)
                 .padding(10)
             
             Button("Present Second View") {
-                showFullScreenCover.toggle()
+                var transaction = Transaction(animation: nil)
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    showFullScreenCover.toggle()
+                }
             }
+            .foregroundColor(Color.accentColor)
         }
         .padding()
         .fullScreenCover(isPresented: $showFullScreenCover) {
@@ -26,7 +30,8 @@ struct HomeView: View {
                 .presentationWithBackgroundColor(color: Color.clear)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
+        .foregroundColor(Color(UIColor.label))
         .navigationTitle("HOME")
     }
 }
